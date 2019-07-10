@@ -1,49 +1,230 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
 
-		<title>reveal.js</title>
+    <title>Introduction to Airflow</title>
 
-		<link rel="stylesheet" href="css/reset.css">
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/reveal.css" />
+    <link rel="stylesheet" href="css/theme/moon.css" />
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/monokai.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/monokai.css" />
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href = window.location.search.match(/print-pdf/gi)
+        ? "css/print/pdf.css"
+        : "css/print/paper.css";
+      document.getElementsByTagName("head")[0].appendChild(link);
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>Apache Airflow</h1>
+          <h2>Data pipelines the AirBnb way</h2>
+          <img src="images/data_pipeline_xkcd_2054.png" />
 
-		<script src="js/reveal.js"></script>
+          <a href="https://sheenarbw.github.io/pres-intro-to-airflow/">
+            https://sheenarbw.github.io/pres-intro-to-airflow/
+          </a>
+        </section>
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true }
-				]
-			});
-		</script>
-	</body>
+        <section>
+          <h2>Contents</h2>
+          <ul>
+            <li></li>
+            <li></li>
+          </ul>
+        </section>
+
+        <section>
+          <section>
+            <h2>The problem</h2>
+
+            <h3>
+              As data-driven organisations grow...
+            </h3>
+            <ul>
+              <li>Data pipeline requirements grow</li>
+              <li>Multiple data sources</li>
+              <li>complex networks of processes</li>
+              <li>
+                intricate dependencies
+              </li>
+              <li>specific schedules</li>
+              <li>stakeholder requirements grow and shift</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>
+              Overarching technical needs grow...
+            </h3>
+            <ul>
+              <li>monitoring</li>
+              <li>retries</li>
+              <li>maintainable code</li>
+              <li>scale</li>
+              <li>troubleshoot</li>
+              <li>autherization</li>
+              <li>SLA</li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Enter Apache Airflow</h2>
+            <img src="images/airflow logo 1.png" height="200" />
+
+            <blockquote cite="https://airflow.apache.org/">
+              &ldquo;Airflow is a platform to programmatically author, schedule
+              and monitor workflows &rdquo;
+            </blockquote>
+          </section>
+
+          <section>
+            <h3>
+              Example Dag: configuration as Python code
+            </h3>
+
+            <pre><code class="python" data-trim contenteditable style="font-size: 18px;">
+                    with DAG(
+                        "do_nice_things",
+                        default_args=default_args,
+                        schedule_interval="@daily",
+                    ) as dag:
+
+                        task_fetch_data = BashOperator(
+                                task_id="fetch_the_data",
+                                bash_command="wget https://example.foo/blah.csv"
+                            )
+
+                        task_clean_data = PythonOperator(
+                                    task_id="clean_the_data",
+                                    python_callable=clean_it_yo
+                            )
+
+                        task_fetch_data >> task_clean_data
+
+                </code></pre>
+          </section>
+
+          <section>
+            <h3>
+              Why is this cool?
+            </h3>
+            <ul>
+              <li>can do simple "declarative" things like above</li>
+              <li>
+                can generate DAGs dynamically (eg create a bunch of tasks within
+                a loop)
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>Operators</h3>
+            <ul>
+              <li>PythonOperator - executes arbitrary Python code</li>
+              <li>
+                BashOperator - executes arbitrary bash commands,leveraging Jinja
+                templating
+              </li>
+              <li>BranchPythonOperator</li>
+              <li>TriggerDagRunOperator</li>
+              <li>EmailOperator / SlackOperator</li>
+              <li>...more than 40 in total</li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- <section>
+          <h2>Principles</h2>
+          <ul>
+            <li>dynamic: config as Python code</li>
+            <li>extensible: easy to add custom operators and hooks etc</li>
+            <li>elegant: lean, explicit. good with parameters</li>
+            <li>
+              scalable: modular, message queue is used to orchestrate arbitrary
+              number of workers
+            </li>
+          </ul>
+        </section> -->
+
+        <section>
+          <h2>Architecture</h2>
+        </section>
+
+        <section>
+          <h2>Web UI tour</h2>
+          <img src="images/airflow.gif" />
+        </section>
+
+        <section>
+          <h2>Me :)</h2>
+
+          <a href="mailto:sheena.oconnell@umuzi.org">
+            sheena.oconnell@umuzi.org
+          </a>
+
+          <table>
+            <tr>
+              <td>
+                <ul>
+                  <li>Been coding for over 10 years mostly SME and startups</li>
+                  <li>
+                    Technical writer and occasional dev for
+                    <a
+                      href="https://www.codementor.io/sheena/posts?referral=sheena-kvo1e6ewh"
+                      >Codementor</a
+                    >
+                  </li>
+                  <li>
+                    Umuzi. Wearer of many hats. Head of web dev and data
+                    engineering
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </table>
+
+          <div style="float: center">
+            <img
+              src="images/umuzi.png"
+              height="150"
+              style="margin-right:100;"
+            />
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: "plugin/markdown/marked.js" },
+          { src: "plugin/markdown/markdown.js" },
+          { src: "plugin/notes/notes.js", async: true },
+          { src: "plugin/highlight/highlight.js", async: true }
+        ]
+      });
+    </script>
+  </body>
 </html>
