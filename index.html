@@ -45,8 +45,8 @@
           <ul>
             <li>The problem</li>
             <li>Enter Apache Airflow</li>
-            <li>Architecture</li>
             <li>Interaction</li>
+            <li>Architecture</li>
           </ul>
         </section>
 
@@ -152,26 +152,86 @@
           </section>
         </section>
 
-        <!-- <section>
-          <h2>Principles</h2>
-          <ul>
-            <li>dynamic: config as Python code</li>
-            <li>extensible: easy to add custom operators and hooks etc</li>
-            <li>elegant: lean, explicit. good with parameters</li>
-            <li>
-              scalable: modular, message queue is used to orchestrate arbitrary
-              number of workers
-            </li>
-          </ul>
-        </section> -->
-
         <section>
-          <h2>Architecture</h2>
+          <section>
+            <h3>Interaction</h3>
+            <ul>
+              <li>
+                <a href="https://airflow.apache.org/cli.html"
+                  >Command line utility</a
+                >
+              </li>
+              <li>
+                <a href="https://airflow.apache.org/api.html"
+                  >Experimental REST api</a
+                >
+              </li>
+              <li>Web UI</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Web UI tour</h2>
+            <img src="images/airflow.gif" height="400" />
+          </section>
         </section>
 
         <section>
-          <h2>Web UI tour</h2>
-          <img src="images/airflow.gif" />
+          <h2>Architecture</h2>
+
+          <img src="images/architecture.png" />
+        </section>
+
+        <section>
+          <h3>Deployment</h3>
+
+          <pre><code class="python" data-trim contenteditable style="font-size: 18px;">
+# Based on https://github.com/puckel/docker-airflow
+version: "3.3"
+services:
+  nginx:
+    image: nginx:1.17.1
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./gitignore/nginxlog:/var/log/nginx
+      - $SECRET_DIR:/etc/apache2
+    restart: always
+
+  postgres:
+    image: gcr.io/cloudsql-docker/gce-proxy:1.12
+    ports:
+      - "5432:5432"
+    command: /cloud_sql_proxy -instances=$SQL_CONNECTION_NAME=tcp:0.0.0.0:5432 -credential_file=/config/$GOOGLE_APPLICATION_CREDENTIALS_FILE
+    volumes:
+      - $SECRET_DIR:/config
+
+  webserver:
+    image: umuzi/docker-airflow:1.10.3
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+      - POSTGRES_USER=$POSTGRES_AIRFLOW_USER
+      - POSTGRES_PASSWORD=$POSTGRES_AIRFLOW_PASS
+      - POSTGRES_DB=$POSTGRES_AIRFLOW_DB
+    volumes:
+      - ../dags:/usr/local/airflow/dags
+      - ../data/docker:/usr/local/airflow/data:Z
+      - ../logs/docker:/usr/local/airflow/logs:Z
+    command: webserver
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+
+                </code></pre>
         </section>
 
         <section>
@@ -187,15 +247,14 @@
                 <ul>
                   <li>Been coding for over 10 years mostly SME and startups</li>
                   <li>
-                    Technical writer and occasional dev for
                     <a
                       href="https://www.codementor.io/sheena/posts?referral=sheena-kvo1e6ewh"
                       >Codementor</a
-                    >
+                    >: Technical writer and occasional dev
                   </li>
                   <li>
-                    Umuzi. Wearer of many hats. Head of web dev and data
-                    engineering
+                    <a href="https://www.umuzi.org/">Umuzi</a>: Wearer of many
+                    hats. Head of web dev and data engineering
                   </li>
                 </ul>
               </td>
@@ -209,6 +268,13 @@
               style="margin-right:100;"
             />
           </div>
+        </section>
+
+        <section>
+          <h2>Questions?</h2>
+          <a href="https://sheenarbw.github.io/pres-airflow/">
+            https://sheenarbw.github.io/pres-airflow/
+          </a>
         </section>
       </div>
     </div>
