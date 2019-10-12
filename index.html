@@ -31,58 +31,58 @@
     <div class="reveal">
       <div class="slides">
         <section>
-          <h1>Apache Airflow</h1>
-          <h2>Data pipelines the AirBnb way</h2>
-          <img src="images/data_pipeline_xkcd_2054.png" />
+          <img src="images/data_pipeline_xkcd_2054.png" width="1500" />
 
-          <a href="https://sheenarbw.github.io/pres-airflow/">
-            https://sheenarbw.github.io/pres-airflow/
-          </a>
+          <!-- <a href="https://sheenarbw.github.io/pres-airflow/"> -->
+          <!-- https://sheenarbw.github.io/pres-airflow/ -->
+          <!-- </a> -->
         </section>
 
         <section>
-          <h2>Me :)</h2>
-
-          <a href="mailto:sheena.oconnell@umuzi.org">
-            sheena.oconnell@umuzi.org
-          </a>
-
-          <table>
-            <tr>
-              <td>
-                <ul>
-                  <li>Been coding for over 10 years mostly SME and startups</li>
-                  <li>
-                    <a
-                      href="https://www.codementor.io/sheena/posts?referral=sheena-kvo1e6ewh"
-                      >Codementor</a
-                    >: Technical writer and occasional dev
-                  </li>
-                  <li>
-                    <a href="https://www.umuzi.org/">Umuzi</a>: Wearer of many
-                    hats. Head of web dev and data engineering
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </table>
-
+          <h1>Apache Airflow</h1>
           <div style="float: center">
             <img
               src="images/umuzi.png"
-              height="150"
+              height="200"
               style="margin-right:100;"
             />
           </div>
+          <h2>@UMUZI.ORG</h2>
         </section>
 
         <section>
-          <h2>Contents</h2>
+            <h1>
+                Umuzi
+            </h1>
+            <ul>
+                <li class="fragment">Key metric: # people placed in high value careers</li>
+                <li class="fragment">online test -> human interview -> bootcamp -> learnership -> $$</li>
+                <li class="fragment">growing very fast</li>
+                <li class="fragment">Based in Jeppestown</li>
+                <li class="fragment">We're hiring &lt- shameless plug</li>
+            </ul>
+        </section>
+
+        <section>
+          <h1>Me :)</h1>
+          <div style="float: center">
+            <img
+              src="images/umuzi.png"
+              height="100"
+              style="margin-right:100;"
+            />
+          </div>
           <ul>
-            <li>The problem</li>
-            <li>Enter Apache Airflow</li>
-            <li>Interaction</li>
-            <li>Architecture</li>
+            <li>
+              <a href="mailto:sheena.oconnell@umuzi.org">
+                sheena.oconnell@umuzi.org
+              </a>
+            </li>
+            <li>
+              Umuzi CTO
+            </li>
+            <li>Coding for more than 10 years</li>
+            <li>All about that Python life</li>
           </ul>
         </section>
 
@@ -91,17 +91,17 @@
             <h2>The problem</h2>
 
             <h3>
-              As data-driven organisations grow...
+              As data-driven organizations grow...
             </h3>
             <ul>
-              <li>Data pipeline requirements grow</li>
-              <li>Multiple data sources</li>
-              <li>complex networks of processes</li>
-              <li>
+              <li class="fragment">Data pipeline requirements grow</li>
+              <li class="fragment">Multiple data sources</li>
+              <li class="fragment">complex networks of processes</li>
+              <li class="fragment">
                 intricate dependencies
-              </li>
-              <li>specific schedules</li>
-              <li>stakeholder requirements grow and shift</li>
+              </li class="fragment">
+              <li class="fragment">specific schedules</li>
+              <li class="fragment">stakeholder requirements grow and shift</li>
             </ul>
           </section>
 
@@ -110,13 +110,13 @@
               Overarching technical needs grow...
             </h3>
             <ul>
-              <li>monitoring</li>
-              <li>retries</li>
-              <li>maintainable code</li>
-              <li>scale</li>
-              <li>troubleshoot</li>
-              <li>autherization</li>
-              <li>SLA</li>
+              <li class="fragment">monitoring</li>
+              <li class="fragment">retries</li>
+              <li class="fragment">maintainable code</li>
+              <li class="fragment">scale</li>
+              <li class="fragment">troubleshoot</li>
+              <li class="fragment">autherization</li>
+              <li class="fragment">SLA</li>
             </ul>
           </section>
         </section>
@@ -124,12 +124,20 @@
         <section>
           <section>
             <h2>Enter Apache Airflow</h2>
-            <img src="images/airflow logo 1.png" height="200" />
+            <img src="images/airflow logo 1.png" height="200" /><br>
 
-            <blockquote cite="https://airflow.apache.org/">
+           
+            <blockquote cite="https://airflow.apache.org/" class="fragment">
               &ldquo;Airflow is a platform to programmatically author, schedule
               and monitor workflows &rdquo;
             </blockquote>
+
+        </section>
+ 
+
+          <section>
+              <h3>Some terminology</h3>
+              <img src="images/dag.png" height="300"/>
           </section>
 
           <section>
@@ -164,26 +172,27 @@
               Why is this cool?
             </h3>
             <ul>
-              <li>can do simple "declarative" things like above</li>
-              <li>
-                can generate DAGs dynamically (eg create a bunch of tasks within
+              <li class="fragment">can do simple "declarative" things like above</li>
+              <li class="fragment">
+                can generate DAG tasks dynamically (eg create a bunch of tasks within
                 a loop)
               </li>
+              <li class="fragment">Parmaeterise entire DAGs</li>
             </ul>
           </section>
 
           <section>
             <h3>Operators</h3>
             <ul>
-              <li>PythonOperator - executes arbitrary Python code</li>
-              <li>
+              <li class="fragment">PythonOperator - executes arbitrary Python code</li>
+              <li class="fragment">
                 BashOperator - executes arbitrary bash commands,leveraging Jinja
                 templating
               </li>
-              <li>BranchPythonOperator</li>
-              <li>TriggerDagRunOperator</li>
-              <li>EmailOperator / SlackOperator</li>
-              <li>...more than 40 in total</li>
+              <li class="fragment">BranchPythonOperator</li>
+              <li class="fragment">TriggerDagRunOperator</li>
+              <li class="fragment">EmailOperator / SlackOperator</li>
+              <li class="fragment">...more than 40 in total</li>
             </ul>
           </section>
         </section>
@@ -192,18 +201,18 @@
           <section>
             <h3>Interaction</h3>
             <ul>
-              <li>
+              <li  class="fragment">
                 <a href="https://airflow.apache.org/cli.html"
                   >Command line utility</a
                 >
               </li>
-              <li>
+              <li  class="fragment">
                 <a href="https://airflow.apache.org/api.html"
                   >Experimental REST api</a
                 >
               </li>
-              <li>Python ...</li>
-              <li>Web UI</li>
+              <li class="fragment">Python ...</li>
+              <li class="fragment">Web UI</li>
             </ul>
           </section>
 
@@ -271,22 +280,11 @@ services:
                 </code></pre>
         </section>
 
-        <section>
-          <h2>
-            <a href="https://umuzi.org">
-              umuzi.org
-            </a>
-          </h2>
-
-          <img src="images/umuzi.png" style="margin-right:100;" />
-          <br />
-          <a href="mailto:sheena.oconnell@umuzi.org"
-            >sheena.oconnell@umuzi.org</a
-          >
-        </section>
+       
 
         <section>
-          <h2>Questions?</h2>
+          <h2>&lt/Presentation></h2>
+          <img src="images/qr.png"/>
           <a href="https://sheenarbw.github.io/pres-airflow/">
             https://sheenarbw.github.io/pres-airflow/
           </a>
